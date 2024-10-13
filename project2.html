@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rain Effect with Smooth Scroll</title>
+  <style>
+    /* 背景样式，固定背景图 */
+    body {
+      background: url('./wallhaven-kxd6y7.png') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      scroll-behavior: smooth; /* 平滑滚动效果 */
+     }
+    
+
+    /* 雨滴效果 */
+    .rain-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .rain-drop {
+      position: absolute;
+      bottom: 100%;
+      width: 3px;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.5); /* 半透明白色雨滴 */
+      animation: fall 1s linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(1100vh); /* 雨滴下落超过视口 */
+      }
+    }
+
+   
+
+    /* 导航栏样式 */
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0px;
+      width: 100%;
+      padding: 10px 0px;
+      background-color: rgba(255, 255, 255, 0.5); /* 半透明背景 */
+      display: flex;
+      justify-content: center; /* 选项居中对齐 */
+      z-index: 10;
+      font-family: "Qwitcher Grypen", cursive; 
+      font-size: 40px;
+      letter-spacing: 2px;
+
+    }
+
+    /* 导航选项样式 */
+    .navbar a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: black; /* 文字颜色 */
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .navbar a:hover {
+      color: skyblue; /* 悬停效果 */
+    }
+
+    /* 每个页面部分的基本样式 */
+    .section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 3em;
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    .section a{
+      text-decoration: none;
+      font-size: 4rem;
+      font-family: "Qwitcher Grypen", cursive;
+      color:antiquewhite;
+      transition: color 0.3s;
+      
+    }
+
+    .section a:hover{
+      color: skyblue;
+    }
+
+    /* 默认的过渡效果 */
+    #section2 {
+      opacity: 0;
+      transform: translateY(50px); /* 初始位置偏移 */
+    
+    }
+
+    /* 自定义页面部分的额外间距 */
+    #a { margin-right: 250px; }
+    #b { margin-right: 250px; }
+    #c { margin-right: 200px; }
+  </style>
+
+  <!-- 引入Google字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Qwitcher+Grypen:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 背景及雨滴效果容器 -->
+  <div class="rain-container">
+    <!-- 导航栏 -->
+    <div class="navbar">
+      <a id="a" href="#section1">Option</a>
+      <a id="b" href="#section2">Setting</a>
+      <a id="c" href="#">Download</a>
+      <a id="d" href="#section2">Information</a>
+    </div>
+  </div>
+
+
+  <!-- 第一个页面部分 -->
+  <div id="section1" class="section" style="background-color: rgba(0, 0, 0, 0.5);">
+    <a href="#section2">Go to Page 2</a>
+  </div>
+
+  <!-- 第二个页面部分 -->
+  <div id="section2" class="section" style="background-color: rgba(50, 50, 50, 0.5);">
+    <a href="#section1">Go to Page 1</a>
+  </div>
+
+  <!-- 雨滴效果JS代码 -->
+  <script>
+    const rainContainer = document.querySelector('.rain-container');
+
+    function createRainDrop() {
+      const drop = document.createElement('div');
+      drop.classList.add('rain-drop');
+
+      // 随机设置雨滴的横向位置
+      drop.style.left = Math.random() * 100 + 'vw';
+      // 随机设置雨滴的动画时长，给人以雨滴速度不一的感觉
+      drop.style.animationDuration = Math.random() * 0.5 + 0.75 + 's';
+      // 随机设置雨滴的长度
+      drop.style.height = Math.random() * 50 + 20 + 'px';
+
+      rainContainer.appendChild(drop);
+
+      // 一段时间后移除雨滴，避免内存泄漏
+      setTimeout(() => {
+        drop.remove();
+      }, 1500); // 动画时间结束后移除
+    }
+
+    // 每100毫秒生成一个雨滴
+    setInterval(createRainDrop, 100);
+
+    // 平滑滚动过渡动画
+    window.addEventListener('scroll', function() {
+      const section2 = document.getElementById('section2');
+      const bounding = section2.getBoundingClientRect();
+
+      if (bounding.top < window.innerHeight && bounding.bottom >= 0) {
+        section2.style.opacity = '1';
+        section2.style.transform = 'translateY(0)';
+      }
+    });
+
+    // 点击导航栏链接实现平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
